@@ -28,8 +28,7 @@ def fetch_planner():
         period_dates.append(date)
 
     planner = planner.loc[:,period_dates]
-    print(planner)
-    #return planner
+    return planner
 
 
 def mail_daily_digest(planner):
@@ -38,18 +37,34 @@ def mail_daily_digest(planner):
     EMAIL_RECIPIENT = os.environ["EMAIL_RECIPIANT"]
     SUBJECT = "Subject:Daily Digest\n\n"
     SIG = "Ha en bra dag\nAdrian"
-    ME = os.environ["ME"] 
-    
-    
-    msg = ""
-    planner = planner.loc[ME]
-    print(planner.loc["2022-10-30 00:00:00"])
+    ME = os.environ["ME"]
+    TODAY = dt.datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+    TOMORROW = TODAY + dt.timedelta(days=1)
 
+
+    my_planner = planner.loc[ME]
+    job_title = []
+    team = []
+    for index, value in my_planner.items():
+        if pd.isna(value):
+            job_title.append("Oplanerad")
+        else:
+            job_title.append(value)
+            #for name, job in planner[str(index)].items():
+            #    if job == value and name != ME:
+            #        team.append(name)
+
+    msg = f"Idag är du planerad på; {job_title[0]}.\nTilsammans med:\n"
+    for i in team:
+        msg = msg + f"{i}\n"
+
+    print(msg)
+        
 
 def main():
     load_dotenv()
     planner = fetch_planner()
-    #mail_daily_digest(planner)
+    mail_daily_digest(planner)
         
 if __name__ == "__main__":
     main()
