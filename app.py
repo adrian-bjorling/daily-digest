@@ -21,19 +21,15 @@ def fetch_planner():
     planner.dropna(subset="Namn", inplace=True)
     planner.set_index("Namn", inplace=True)
 
-    today = dt.datetime.today()
-    start_date = today - dt.timedelta(days=today.weekday())
-    
-    start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
-
+    today = dt.datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
     period_dates = []
     for i in range(TIME_PERIOD):
-        date = start_date + dt.timedelta(days=i)
+        date = today + dt.timedelta(days=i)
         period_dates.append(date)
 
     planner = planner.loc[:,period_dates]
-
-    return planner
+    print(planner)
+    #return planner
 
 
 def mail_daily_digest(planner):
@@ -47,13 +43,13 @@ def mail_daily_digest(planner):
     
     msg = ""
     planner = planner.loc[ME]
-    print(planner)
+    print(planner.loc["2022-10-30 00:00:00"])
 
 
 def main():
     load_dotenv()
     planner = fetch_planner()
-    mail_daily_digest(planner)
+    #mail_daily_digest(planner)
         
 if __name__ == "__main__":
     main()
