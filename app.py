@@ -65,7 +65,7 @@ def construct_message(planner):
 def mail_daily_digest(message):
     EMAIL = os.environ["EMAIL"]
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
-    SUBJECT = "Daily Digest"
+    SUBJECT = "Subject:Daily Digest\n\n"
     SIG = "Ha en bra dag\nAdrian"
     HOST = "smtp.gmail.com"
     PORT= 587
@@ -73,7 +73,7 @@ def mail_daily_digest(message):
     msg = ""
     for index in message:
         msg = msg + index
-    msg = msg + SIG
+    msg = SUBJECT + msg + SIG
     msg = msg.encode("utf-8", errors="igonre")
 
     server = smtplib.SMTP(HOST, PORT)
@@ -81,7 +81,6 @@ def mail_daily_digest(message):
     server.login(EMAIL, EMAIL_PASSWORD)
 
     server.sendmail(EMAIL, EMAIL, msg)
-    print(msg)
     server.quit()
     return
 
