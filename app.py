@@ -60,24 +60,27 @@ def construct_message(planner):
 
 
 def mail_daily_digest(message):
-    EMAIL_SENDER = os.environ["EMAIL_SENDER"]
+    EMAIL = os.environ["EMAIL"]
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
-    EMAIL_RECIPIENT = os.environ["EMAIL_RECIPIANT"]
-    SUBJECT = "Subject:Daily Digest\n\n"
+    SUBJECT = "Daily Digest"
     SIG = "Ha en bra dag\nAdrian"
-    HOST = os.environ["HOST"]
-    PORT= os.environ["PORT"]
+    HOST = "smtp.gmail.com"
+    PORT= 587
 
-    mail_msg = SUBJECT
+    msg = ""
     for index in message:
-        mail_msg = mail_msg + index
-    mail_msg = mail_msg + SIG
-    mail_msg.encode("UTF-8")
+        msg = msg + index
+    msg = msg + SIG
+    msg = msg.encode("utf-8", errors="igonre")
 
-    with smtplig.SMTP(host=HOST, port=PORT) as connection:
-        connection.starttls()
-        connection.login(user=EMAIL_SENDER, to_addrs=EMAIL_RECIPIENT, msg=mail_msg)
-    
+
+    server = smtplib.SMTP(HOST, PORT)
+    server.starttls()
+    server.login(EMAIL, EMAIL_PASSWORD)
+
+    server.sendmail(EMAIL, EMAIL, msg)
+    print(msg)
+    server.quit()
     return
 
     
