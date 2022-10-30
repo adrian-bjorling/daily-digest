@@ -31,40 +31,60 @@ def fetch_planner():
     return planner
 
 
-def mail_daily_digest(planner):
+def construct_message(planner):
+    ME = os.environ["ME"]
+
+
+    my_planner = planner.loc[ME]
+    msg = []
+    jobs = {}
+    for index, value in my_planner.items():
+        date = str(index).split()[0]
+        jobs[date] = {}
+        if pd.isna(value):
+            jobs[date] = {"job" : "Oplanerad", "team" : []}
+        else:
+            team = []
+            for name, job in planner[index].items():
+                if job == value and name != ME:
+                    team.append(name)
+            jobs[date] = {"job" : value, "team" : team}
+
+    for date in jobs.items():
+        local_msg = f"{date[0]} är du planerad på; {date[1]['job']}.\nTilsammans med:\n"
+        for name in date[1]["team"]:
+            msg = msg + f"{name}\n"
+        msg.append(local_msg)
+
+    return msg
+
+
+def mail_digest(message)
     EMAIL_SENDER = os.environ["EMAIL_SENDER"]
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
     EMAIL_RECIPIENT = os.environ["EMAIL_RECIPIANT"]
     SUBJECT = "Subject:Daily Digest\n\n"
     SIG = "Ha en bra dag\nAdrian"
-    ME = os.environ["ME"]
-    TODAY = dt.datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
-    TOMORROW = TODAY + dt.timedelta(days=1)
+    HOST = os.environ["HOST"]
+    PORT= os.environ["PORT"]
 
+    mail_msg = SUBJECT
+    for index in message:
+        mail_msg = mail_msg + index
+    mail_msg = mail_msg + SIG
+    mail_msg.encode("UTF-8")
 
-    my_planner = planner.loc[ME]
-    job_title = []
-    team = []
-    for index, value in my_planner.items():
-        if pd.isna(value):
-            job_title.append("Oplanerad")
-        else:
-            job_title.append(value)
-            #for name, job in planner[str(index)].items():
-            #    if job == value and name != ME:
-            #        team.append(name)
+    with smtplig.SMTP(host=HOST, port=PORT) as connection:
+        connection.starttls()
+        connection.login(user=EMAIL_SENDER, to_addrs=EMAIL_RECIPIENT, msg=mail_msg)
+    
+    return
 
-    msg = f"Idag är du planerad på; {job_title[0]}.\nTilsammans med:\n"
-    for i in team:
-        msg = msg + f"{i}\n"
-
-    print(msg)
-        
-
+    
 def main():
     load_dotenv()
     planner = fetch_planner()
-    mail_daily_digest(planner)
+    construct_message(planner)
         
 if __name__ == "__main__":
     main()
