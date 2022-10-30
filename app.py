@@ -59,7 +59,7 @@ def construct_message(planner):
     return msg
 
 
-def mail_digest(message)
+def mail_daily_digest(message):
     EMAIL_SENDER = os.environ["EMAIL_SENDER"]
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
     EMAIL_RECIPIENT = os.environ["EMAIL_RECIPIANT"]
@@ -84,7 +84,8 @@ def mail_digest(message)
 def main():
     load_dotenv()
     planner = fetch_planner()
-    construct_message(planner)
+    message = construct_message(planner)
+    mail_daily_digest(message)
         
 if __name__ == "__main__":
     main()
