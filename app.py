@@ -51,11 +51,10 @@ def construct_message(planner):
             jobs[date] = {"job" : value, "team" : team}
 
     for date in jobs.items():
-        local_msg = f"{date[0]} - {date[1]['job']}.\n"
+        local_msg = f"{date[0]}: {date[1]['job']}\n"
         if date[1]["job"] != "Oplanerad" and date[1]["team"] != []:
-            local_msg = local_msg + f"Med:\n"
             for name in date[1]["team"]:
-                local_msg = local_msg + f"{name}\n"
+                local_msg = local_msg + f"->{name}\n"
             local_msg = local_msg + "\n"
         msg.append(local_msg)
 
