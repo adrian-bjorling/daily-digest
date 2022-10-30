@@ -51,9 +51,9 @@ def construct_message(planner):
             jobs[date] = {"job" : value, "team" : team}
 
     for date in jobs.items():
-        local_msg = f"{date[0]} är du planerad på; {date[1]['job']}.\n"
+        local_msg = f"{date[0]} - {date[1]['job']}.\n"
         if date[1]["job"] != "Oplanerad" and date[1]["team"] != []:
-            local_msg = local_msg + f"\nTilsammans med:\n"
+            local_msg = local_msg + f"\nMed:\n"
             for name in date[1]["team"]:
                 local_msg = local_msg + f"{name}\n"
             local_msg = local_message + "\n"
@@ -66,7 +66,7 @@ def mail_daily_digest(message):
     EMAIL = os.environ["EMAIL"]
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
     SUBJECT = "Subject:Daily Digest\n\n"
-    SIG = "Ha en bra dag\nAdrian"
+    SIG = "\nHa en bra dag!"
     HOST = "smtp.gmail.com"
     PORT= 587
 
