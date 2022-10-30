@@ -39,7 +39,10 @@ def construct_message(planner):
     msg = []
     jobs = {}
     for index, value in my_planner.items():
-        date = str(index).split()[0]
+        if index.weekday() > 4:
+            date = str(index).split()[0] + "(Helg)"
+        else:
+            date = str(index).split()[0]
         jobs[date] = {}
         if pd.isna(value):
             jobs[date] = {"job" : "Oplanerad", "team" : []}
@@ -55,7 +58,6 @@ def construct_message(planner):
         if date[1]["job"] != "Oplanerad" and date[1]["team"] != []:
             for name in date[1]["team"]:
                 local_msg = local_msg + f"->{name}\n"
-            local_msg = local_msg + "\n"
         msg.append(local_msg)
 
     return msg
