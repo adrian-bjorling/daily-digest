@@ -51,9 +51,12 @@ def construct_message(planner):
             jobs[date] = {"job" : value, "team" : team}
 
     for date in jobs.items():
-        local_msg = f"{date[0]} är du planerad på; {date[1]['job']}.\nTilsammans med:\n"
-        for name in date[1]["team"]:
-            msg = msg + f"{name}\n"
+        local_msg = f"{date[0]} är du planerad på; {date[1]['job']}.\n"
+        if date[1]["job"] != "Oplanerad" and date[1]["team"] != []:
+            local_msg = local_msg + f"\nTilsammans med:\n"
+            for name in date[1]["team"]:
+                local_msg = local_msg + f"{name}\n"
+            local_msg = local_message + "\n"
         msg.append(local_msg)
 
     return msg
@@ -73,7 +76,6 @@ def mail_daily_digest(message):
     msg = msg + SIG
     msg = msg.encode("utf-8", errors="igonre")
 
-
     server = smtplib.SMTP(HOST, PORT)
     server.starttls()
     server.login(EMAIL, EMAIL_PASSWORD)
@@ -83,12 +85,13 @@ def mail_daily_digest(message):
     server.quit()
     return
 
-    
+
 def main():
     load_dotenv()
     planner = fetch_planner()
     message = construct_message(planner)
     mail_daily_digest(message)
-        
+
+
 if __name__ == "__main__":
     main()
