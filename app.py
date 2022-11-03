@@ -80,7 +80,7 @@ def mail_daily_digest(message):
 
     server = smtplib.SMTP(HOST, PORT)
     server.starttls()
-    server.login(EMAIL, EMAIL_PASSWORD)
+    server.login(EMAIL_FROM, EMAIL_PASSWORD)
 
     server.sendmail(EMAIL_FROM, EMAIL_TO, msg)
     server.quit()
