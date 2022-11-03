@@ -88,7 +88,7 @@ def mail_daily_digest(message):
 
 
 def main():
-load_dotenv()
+    load_dotenv()
     planner = fetch_planner()
     message = construct_message(planner)
     mail_daily_digest(message)
