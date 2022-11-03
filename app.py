@@ -64,7 +64,8 @@ def construct_message(planner):
 
 
 def mail_daily_digest(message):
-    EMAIL = os.environ["EMAIL"]
+    EMAIL_FROM = os.environ["EMAIL_FROM"]
+    EMAIL_TO = os.environ["EMAIL_TO"]
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
     SUBJECT = "Subject:Daily Digest\n\n"
     SIG = "\nHa en bra dag!"
@@ -81,13 +82,13 @@ def mail_daily_digest(message):
     server.starttls()
     server.login(EMAIL, EMAIL_PASSWORD)
 
-    server.sendmail(EMAIL, EMAIL, msg)
+    server.sendmail(EMAIL_FROM, EMAIL_TO, msg)
     server.quit()
     return
 
 
 def main():
-    load_dotenv()
+load_dotenv()
     planner = fetch_planner()
     message = construct_message(planner)
     mail_daily_digest(message)
