@@ -63,6 +63,9 @@ def construct_message(planner):
     return msg
 
 
+def two():
+    pass
+
 def mail_daily_digest(message):
     EMAIL_FROM = os.environ["EMAIL_FROM"]
     EMAIL_TO = os.environ["EMAIL_TO"]
