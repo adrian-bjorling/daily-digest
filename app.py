@@ -63,8 +63,11 @@ def construct_message(planner):
     return msg
 
 
-def two():
-    pass
+def write_msg_to_file(msg):
+    with open("message.txt", "w") as doc:
+        for index in msg:
+            doc.write(index)
+    return
 
 def mail_daily_digest(message):
     EMAIL_FROM = os.environ["EMAIL_FROM"]
@@ -77,7 +80,7 @@ def mail_daily_digest(message):
 
     msg = ""
     for index in message:
-        msg = msg + index
+        msg += index
     msg = SUBJECT + msg + SIG
     msg = msg.encode("utf-8", errors="igonre")
 
@@ -95,6 +98,7 @@ def main():
     planner = fetch_planner()
     message = construct_message(planner)
     mail_daily_digest(message)
+    # write_msg_to_file(message)
 
 
 if __name__ == "__main__":
