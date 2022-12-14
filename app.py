@@ -83,7 +83,7 @@ def mail_daily_digest(message, email_to):
     for index in message:
         msg += index
     msg = SUBJECT + msg + SIG
-    msg = msg.encode("utf-8", errors="igonre")
+    msg = msg.encode("utf-8")
 
     server = smtplib.SMTP(HOST, PORT)
     server.starttls()
