@@ -2,6 +2,7 @@ import datetime as dt
 import pandas as pd
 import os
 import smtplib
+import json
 from dotenv import load_dotenv
 
 
@@ -31,8 +32,8 @@ def fetch_planner():
     return planner
 
 
-def construct_message(planner):
-    ME = os.environ["ME"]
+def construct_message(planner, name):
+    ME = name
 
 
     my_planner = planner.loc[ME]
@@ -69,9 +70,9 @@ def write_msg_to_file(msg):
             doc.write(index)
     return
 
-def mail_daily_digest(message):
+def mail_daily_digest(message, email_to):
     EMAIL_FROM = os.environ["EMAIL_FROM"]
-    EMAIL_TO = os.environ["EMAIL_TO"]
+    EMAIL_TO = email_to
     EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
     SUBJECT = "Subject:Daily Digest\n\n"
     SIG = "\nHa en bra dag!"
@@ -95,10 +96,13 @@ def mail_daily_digest(message):
 
 def main():
     load_dotenv()
+    with open(".maillist.json", "r") as data:
+        maillist = json.load(data)
+
     planner = fetch_planner()
-    message = construct_message(planner)
-    mail_daily_digest(message)
-    # write_msg_to_file(message)
+    for name, mail in maillist.items():
+        message = construct_message(planner, name)
+        mail_daily_digest(message, mail)
 
 
 if __name__ == "__main__":
