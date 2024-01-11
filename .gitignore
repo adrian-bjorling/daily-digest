@@ -1,3 +1,4 @@
 .env
 .maillist.json
+run.sh
 tmp/
