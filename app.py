@@ -2,7 +2,7 @@ import datetime as dt
 import pandas as pd
 import os
 import smtplib
-import json
+from json import load
 from dotenv import load_dotenv
 
 
@@ -16,7 +16,7 @@ def fetch_planner():
 
     planner = pd.read_excel(io=ORG_PLANNER_PATH, sheet_name=ORG_PLANNER_SHEET_NAME, header=ORG_PLANNER_HEADER_ROW, usecols=ORG_PLANNER_COLUMNS)
 
-    planner = planner.loc[0:43]
+    planner = planner.loc[0:78]
     planner = planner.drop([0,1])
     planner.columns.values[0] = "Namn"
     planner.dropna(subset="Namn", inplace=True)
@@ -35,7 +35,6 @@ def fetch_planner():
 def construct_message(planner, name):
     ME = name
 
-
     my_planner = planner.loc[ME]
     msg = []
     jobs = {}
@@ -46,7 +45,7 @@ def construct_message(planner, name):
             date = str(index).split()[0]
         jobs[date] = {}
         if pd.isna(value):
-            jobs[date] = {"job" : "Oplanerad", "team" : []}
+            jobs[date] = {"job" : "-", "team" : []}
         else:
             team = []
             for name, job in planner[index].items():
@@ -97,7 +96,7 @@ def mail_daily_digest(message, email_to):
 def main():
     load_dotenv()
     with open(".maillist.json", "r") as data:
-        maillist = json.load(data)
+        maillist = load(data)
 
     planner = fetch_planner()
     for name, mail in maillist.items():
